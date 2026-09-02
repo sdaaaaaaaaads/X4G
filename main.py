@@ -408,7 +408,16 @@ async def ensure_default_link():
 # ── Basic endpoints ───────────────────────────────────────────────────────────
 @app.get("/")
 async def root():
-    return {"service": "X4G", "version": "9.5", "status": "active", "channel": "https://t.me/Farajian2004f"}
+    from panel import LANDING_PAGE
+    return HTMLResponse(content=LANDING_PAGE)
+
+@app.get("/panel", response_class=HTMLResponse)
+async def neon_panel(request: Request):
+    if not await is_valid_session(request.cookies.get(SESSION_COOKIE)):
+        return RedirectResponse(url="/login")
+    await ensure_default_link()
+    from panel import PANEL_PAGE
+    return HTMLResponse(content=PANEL_PAGE)
 
 @app.get("/health")
 async def health():
